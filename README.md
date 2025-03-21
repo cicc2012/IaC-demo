@@ -23,8 +23,8 @@ Here’s how to structure everything.
         │                                         │
         │                                         ▼
 ┌───────────────┐                        ┌───────────────┐
-│  CodePipeline │                        │  S3 Bucket    │
-│  CI/CD        │                        │  (Images)     │
+│   CI/CD       │                        │  S3 Bucket    │
+│   with Github │                        │  (Images)     │
 └───────────────┘                        └───────────────┘
 ```
 
@@ -129,6 +129,8 @@ amplify-textract-demo/
 ```
 
 Inside the `src/main/java/edu/uco/cicc/` directory, create a file called `AmplifyTextractDemoStack.java` to define your CDK infrastructure.
+
+The subfolders /edu/uco/cicc/ are aligned with the package management in Java. You can find the package at the top of each Java file.
 
 You can find a reference of this stack [here](src/AmplifyTextractDemoStack.java).
 
@@ -238,6 +240,15 @@ In this Lambda handler:
 
 We can go to Amplify web console, and create an app from your Github repository.
 
+   - In the Amplify Console, click **Create new aPP**."
+   - Select **GitHub** as the repository source.
+   - You may need to authorize AWS Amplify to access your GitHub account. Grant the necessary permissions. You'll be redirected to GitHub.com, where you'll be asked to grant permission for AWS Amplify to access your GitHub account. You can choose to apply  to all repositories or select specific repositories.
+   - Select the repository that contains your HTML project.
+   - Choose the branch you want to deploy (e.g., `main` or `master`).
+   - "App settings": create a name for your app (unique under your account) 
+   - Configure build settings: You don't need a build process for a single HTML file, so there's no need for a build command. Setting the build output directory to / tells Amplify that your deployable files (in this case, just the index.html) are in the root of your project.
+
+
 2. **CI/CD**: AWS Amplify Console automatically sets up the CI/CD pipeline when you connect a GitHub repository.
 
 ---
@@ -278,13 +289,15 @@ cdk deploy     # Deploys the stack
 
 Please **note**: You only need to run cdk bootstrap **once** per AWS account and region, or if you change the AWS environment (e.g., switch to a new account or region).
 
+So far, this is the initial pipeline to compile the code. When you have future changes, replace "mvn clean install" by **"mvn clean package"**, **without** "cdk boostrap".
+
 ---
 
 ### 4. **CI/CD Pipeline**:
 When you push changes to the Git repository connected to AWS Amplify, the CI/CD pipeline will be triggered:
-1. **Frontend**: The Amplify app is built and deployed to the Amplify Console.
-2. **Backend**: The Lambda function is updated and redeployed via AWS CDK.
-3. **API Gateway**: The API Gateway will forward requests to the Lambda to process the uploaded image.
+- **Frontend**: The Amplify app is built and deployed to the Amplify Console.
+- For deployments using AWS CloudFormation, CLI, or SDKs, you'll need to manually install the Amplify GitHub App and generate a personal access token in your GitHub account. But this is not recommended, because of potential security risks, e.g., exposing the token directly in Github or other AWS services.
+
 
 ---
 

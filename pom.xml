@@ -115,14 +115,12 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>textract</artifactId>
-            <version>2.31.3</version>
         </dependency>
 
         <!-- AWS SDK v2 - S3 -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-            <version>2.31.3</version>
         </dependency>
 
         <!-- Jackson for JSON processing -->
