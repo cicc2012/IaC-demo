@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Extraction and Face Recognition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .container {
+            margin: 19px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        .output-box {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .output-box pre {
+            font-family: "Courier New", monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Text Extraction and Face Recognition v2</h1>
+        <label for="image-url">Enter S3 Image URL:</label>
+        <input type="text" id="image-url" placeholder="Enter S3 object URL">
+        <button onclick="processImage()">Process Image</button>
+    </div>
+
+    <div id="results">
+        <div class="output-box" id="text-output-box">
+            <h3>Extracted Text:</h3>
+            <pre id="text-output">Waiting for results...</pre>
+        </div>
+        
+    </div>
+
+    <script>
+        async function processImage() {
+            const imageUrl = document.getElementById("image-url").value;
+            if (!imageUrl) {
+                alert("Please enter a valid S3 image URL.");
+                return;
+            }
+
+            // Display loading message while waiting for the response
+            document.getElementById("text-output").innerText = "Processing...";
+
+            try {
+                const response = await fetch("https://m7xd78pt6a.execute-api.us-east-1.amazonaws.com/dev/process-image", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ "s3_url":imageUrl })
+                });
+
+                const data = await response.json();
+
+                // Check if the response contains the expected data
+                if (data) {
+					//const result = JSON.parse(data.body);
+                    // Update the text output
+                    document.getElementById("text-output").innerText = JSON.stringify(data.text, null, 2);
+
+                } else {
+                    document.getElementById("text-output").innerText = "No text found in the image.";
+
+                }
+            } catch (error) {
+                console.error("Error processing the image", error);
+                document.getElementById("text-output").innerText = "Error processing the image.";
+            }
+        }
+    </script>
+
+</body>
+</html>
