@@ -14,7 +14,7 @@ About details of AWS CDK V2, you can find more information [here](https://docs.a
 Here’s how to structure everything.
 #### System Architecture
 
-```
+```text
 ┌───────────────┐    ┌───────────────┐    ┌───────────────┐    ┌───────────────┐
 │   AWS Amplify  │    │  API Gateway   │    │ AWS Lambda    │    │  AWS Textract  │
 │   Frontend     │───▶│  REST API      │───▶│  Function     │───▶│  Service      │
@@ -104,6 +104,7 @@ You can use the attached [pom.xml](pom.xml) as reference.
 
 Let's organize the files of this demo as below:
 
+```text
 amplify-textract-demo/
 ├── pom.xml                     # Parent POM
 ├── src/
@@ -125,7 +126,7 @@ amplify-textract-demo/
 │       │                       └── TextractHandler.java
 │       └── target/             # Output directory for the compiled JAR
 │           └── textract-processor.jar
-
+```
 
 Inside the `src/main/java/edu/uco/cicc/` directory, create a file called `AmplifyTextractDemoStack.java` to define your CDK infrastructure.
 
