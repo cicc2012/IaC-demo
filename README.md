@@ -267,7 +267,9 @@ mvn clean package
 mv ./target/textract-1.0-SNAPSHOT.jar ./target/textract.jar
 cd ../..
 ```
-Please **note**: on Windows system, repalce `mv` command to `ren`.
+Please **note**:
+1. on Windows system, repalce `mv` command to `ren`.
+2. the last command is to leave lambda/textract and go to the home folder of this project, where you can find cdk.out and cdk.json.
 
 You will see a file named similar to `textract.jar` under ./lambda/textract/target. If it's name is diffrent from `textract.jar`, then change it to textract.jar.
 This will be the clue for the code in your cdk stack (inside [AmplifyTextractDemoStack.java](src/AmplifyTextractDemoStack.java)) to be covered: 
@@ -288,7 +290,7 @@ from the function:
 
 ##### 3.2 Compile Entire Project
 
-Once everything is ready, you can deploy the CDK stack with the following commands:
+Once everything is ready, you can deploy the CDK stack with the following commands (make sure you are currently in your home folder of the project, not under lambda/textract):
 
 ```bash
 mvn clean install
