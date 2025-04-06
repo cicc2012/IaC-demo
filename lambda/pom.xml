@@ -88,6 +88,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <finalName>textract</finalName>
                         </configuration>
                     </execution>
                 </executions>
