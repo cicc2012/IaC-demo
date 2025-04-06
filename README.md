@@ -98,9 +98,12 @@ In this demo, we will use AWS CDK for infrastructure and **AWS SDK for Java** to
 3. Add required CDK dependencies to your `pom.xml`.
 You can use the attached [pom.xml](pom.xml) as reference.
 
-4. Run `mvn clean install` to install the dependencies.
+#### Step 2.2: File Organization
+Inside the `src/main/java/edu/uco/cicc/` directory, create a file called `AmplifyTextractDemoStack.java` to define your CDK infrastructure.
 
-#### Step 2.2: Create Your Lambda Function in the CDK
+The subfolders /edu/uco/cicc/ are aligned with the package management in Java. You can find the package at the top of each Java file.
+
+You can find a reference of this stack [here](src/AmplifyTextractDemoStack.java).
 
 Let's organize the files of this demo as below:
 
@@ -128,17 +131,12 @@ amplify-textract-demo/
 │           └── textract-processor.jar
 ```
 
-Inside the `src/main/java/edu/uco/cicc/` directory, create a file called `AmplifyTextractDemoStack.java` to define your CDK infrastructure.
 
-The subfolders /edu/uco/cicc/ are aligned with the package management in Java. You can find the package at the top of each Java file.
-
-You can find a reference of this stack [here](src/AmplifyTextractDemoStack.java).
-
-#### Step 2.3: Write the Lambda Function for Textract
+#### Step 2.3: About Lambda Function for Textract
 
 Create a Lambda function in Java that uses AWS Textract to extract text from an image uploaded to the S3 bucket.
 
-- Create a directory `src/main/java/edu/uco/cicc/` and add a `TextractHandler.java` class to process the image with AWS Textract.
+- Create a directory `lambda/textract/src/main/java/edu/uco/cicc/` and add a `TextractHandler.java` class to process the image with AWS Textract.
 
 ```java
 public class TextractHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -231,7 +229,7 @@ public class TextractHandler implements RequestHandler<APIGatewayProxyRequestEve
 ```
 
 In this Lambda handler:
-- The image is analyzed using **AWS Textract**'s `AnalyzeDocument` method.
+- The image is analyzed using **AWS Textract**'s `detectDocumentText` method.
 - The extracted text is returned from the Lambda.
 
 #### Step 2.4: Set Up AWS Amplify Frontend
@@ -271,13 +269,23 @@ cd ../..
 Please **note**: on Windows system, repalce `mv` command to `ren`.
 
 You will see a file named similar to `textract.jar` under ./lambda/textract/target. If it's name is diffrent from `textract.jar`, then change it to textract.jar.
-This will be the clue for the code in your cdk stack to be covered: 
+This will be the clue for the code in your cdk stack (inside [AmplifyTextractDemoStack.java](src/AmplifyTextractDemoStack.java)) to be covered: 
 ```java
-code(Code.fromAsset("./lambda/textract/target/textract.jar"))
+             code(Code.fromAsset("./lambda/textract/target/textract.jar"))
+```
+from the function:
+```java
+         // 1. Create Lambda function for processing images with Textract
+         Function textractFunction = Function.Builder.create(this, "cicc-TextractFunction")
+            .runtime(Runtime.JAVA_17)
+            .code(Code.fromAsset("./lambda/textract/target/textract.jar"))
+            .handler("edu.uco.cicc.TextractHandler::handleRequest")
+            .memorySize(1024)
+            .timeout(Duration.seconds(30))
+            .build();
 ```
 
 ##### 3.2 Compile Entire Project
-
 
 Once everything is ready, you can deploy the CDK stack with the following commands:
 
@@ -287,7 +295,9 @@ cdk bootstrap  # Initializes resources in your AWS environment
 cdk deploy     # Deploys the stack
 ```
 
-Please **note**: You only need to run cdk bootstrap **once** per AWS account and region, or if you change the AWS environment (e.g., switch to a new account or region).
+Please **note**: You only need to run `cdk bootstrap` **once** per AWS account and region, or if you change the AWS environment (e.g., switch to a new account or region). Once this is done, you will see a stack named CDKToolkit in the CloudFormation web console. 
+
+After running `cdk deploy`, you will see other stacks in the CloudFormation web console.
 
 So far, this is the initial pipeline to compile the code. When you have future changes, replace "mvn clean install" by **"mvn clean package"**, **without** "cdk boostrap".
 
