@@ -116,7 +116,8 @@ amplify-textract-demo/
 │           └── edu/
 │               └── uco/
 │                   └── cicc/
-│                       └── AmplifyTextractDemoStack.java
+│                       ├── AmplifyTextractDemoStack.java
+│                       └── AmplifyTextractDemoApp.java
 ├── lambda/                     # Directory for Lambda functions
 │   └── textract/               # Textract Lambda function module
 │       ├── pom.xml             # Textract POM
